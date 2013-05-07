@@ -6,6 +6,9 @@ package caritas;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import javax.swing.ListSelectionModel;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableColumn;
 
 /**
  *
@@ -16,13 +19,55 @@ public class Caritas_principal extends javax.swing.JFrame {
     /**
      * Creates new form Caritas_principal
      */
+        GestionSalidas gestionSalidas = new GestionSalidas();
+        GestionVoluntario gestionVoluntario = new GestionVoluntario();
+        GestionCoordinador gestionCoordinador = new GestionCoordinador();
+        SimpleDateFormat formatoFecha = new SimpleDateFormat("dd/MM/YYYY");
+        ArrayList<Salidas> arrayListSalidas = new ArrayList();
+        DefaultTableModel modelTablaSalidas = new DefaultTableModel();
+        Voluntario voluntario =null;
+        Coordinador coordinador =null;
+        
     public Caritas_principal() {
         initComponents();
         
         Conexion.conectar ("127.0.0.1","root","");
-        GestionSalidas gestionSalidas = new GestionSalidas();
-        SimpleDateFormat formatoFecha = new SimpleDateFormat("dd/MM/YYYY");
-        ArrayList<Salidas> pruebagrupo = new ArrayList();
+        arrayListSalidas= gestionSalidas.getSalidas();
+        
+        
+        modelTablaSalidas = new DefaultTableModel() {
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return false;
+            }                
+        };       
+        String[] cabecera = {"cod_salida","Fecha", " Hora", "Coordinador", "Voluntario"};
+        modelTablaSalidas.setColumnIdentifiers(cabecera);
+        for(int i=0; i<arrayListSalidas.size(); i++) {
+            voluntario = gestionVoluntario.getVoluntario(arrayListSalidas.get(i).cod_voluntario);
+            coordinador = gestionCoordinador.getCoordinador(arrayListSalidas.get(i).cod_Coordinador);
+            //pruebaDetalleSalidaParentesco= gestionAutorizado1.get(pruebaDetalleSalida.get(i).getIdAutorizado());
+            String[] arraySalida = {""+arrayListSalidas.get(i).cod_salida,""+arrayListSalidas.get(i).fecha, ""+arrayListSalidas.get(i).hora, ""+coordinador.nombre+", "+coordinador.apellidos,
+                                       " "+voluntario.nombre + ", "+voluntario.apellidos };
+            modelTablaSalidas.addRow(arraySalida);
+        }    
+       
+        
+        jTable1.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        jTable1.setModel(modelTablaSalidas);
+        jTable1.getColumnModel().getColumn(1).setPreferredWidth(30);
+        jTable1.getColumnModel().getColumn(2).setPreferredWidth(30);
+        jTable1.getColumnModel().getColumn(3).setPreferredWidth(150);
+        jTable1.getColumnModel().getColumn(4).setPreferredWidth(150);
+        
+        //Ocultar columna de idContacto
+        TableColumn tc = jTable1.getColumn("cod_salida");
+        jTable1.removeColumn(tc);
+        
+        
+        
+        
+        
+        /*
         pruebagrupo= gestionSalidas.getSalidas();
         
         for(int i=0; i<pruebagrupo.size(); i++) {
@@ -30,7 +75,7 @@ public class Caritas_principal extends javax.swing.JFrame {
             +pruebagrupo.get(i).cod_voluntario+","+formatoFecha.format(pruebagrupo.get(i).fecha)+","+pruebagrupo.get(i).hora+","+pruebagrupo.get(i).observaciones);
 
         }
-        
+        */
         
         
         
@@ -49,17 +94,39 @@ public class Caritas_principal extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        jScrollPane1 = new javax.swing.JScrollPane();
+        jTable1 = new javax.swing.JTable();
+
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setResizable(false);
+
+        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
+            },
+            new String [] {
+                "Title 1", "Title 2", "Title 3", "Title 4"
+            }
+        ));
+        jScrollPane1.setViewportView(jTable1);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 400, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 568, Short.MAX_VALUE)
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 300, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 183, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 117, Short.MAX_VALUE))
         );
 
         pack();
@@ -100,5 +167,7 @@ public class Caritas_principal extends javax.swing.JFrame {
         });
     }
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JTable jTable1;
     // End of variables declaration//GEN-END:variables
 }
