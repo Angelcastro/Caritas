@@ -27,13 +27,13 @@ public class Caritas_principal extends javax.swing.JFrame {
         DefaultTableModel modelTablaSalidas = new DefaultTableModel();
         Voluntario voluntario =null;
         Coordinador coordinador =null;
+        Salidas salidaSeleccionada;
         
     public Caritas_principal() {
         initComponents();
         
         Conexion.conectar ("127.0.0.1","root","");
         arrayListSalidas= gestionSalidas.getSalidas();
-        
         
         modelTablaSalidas = new DefaultTableModel() {
             public boolean isCellEditable(int rowIndex, int columnIndex) {
@@ -43,45 +43,26 @@ public class Caritas_principal extends javax.swing.JFrame {
         String[] cabecera = {"cod_salida","Fecha", " Hora", "Coordinador", "Voluntario"};
         modelTablaSalidas.setColumnIdentifiers(cabecera);
         for(int i=0; i<arrayListSalidas.size(); i++) {
-            voluntario = gestionVoluntario.getVoluntario(arrayListSalidas.get(i).cod_voluntario);
-            coordinador = gestionCoordinador.getCoordinador(arrayListSalidas.get(i).cod_Coordinador);
+            //voluntario = gestionVoluntario.getVoluntario(arrayListSalidas.get(i).cod_voluntario);
+            //coordinador = gestionCoordinador.getCoordinador(arrayListSalidas.get(i).cod_Coordinador);
             //pruebaDetalleSalidaParentesco= gestionAutorizado1.get(pruebaDetalleSalida.get(i).getIdAutorizado());
-            String[] arraySalida = {""+arrayListSalidas.get(i).cod_salida,""+arrayListSalidas.get(i).fecha, ""+arrayListSalidas.get(i).hora, ""+coordinador.nombre+", "+coordinador.apellidos,
-                                       " "+voluntario.nombre + ", "+voluntario.apellidos };
+            String[] arraySalida = {""+arrayListSalidas.get(i).getCod_salida(),""+arrayListSalidas.get(i).getFecha(), ""+arrayListSalidas.get(i).getHora(), ""+arrayListSalidas.get(i).getCod_Coordinador(),
+                                       " "+arrayListSalidas.get(i).getCod_voluntario() };
             modelTablaSalidas.addRow(arraySalida);
         }    
-       
-        
+
         jTable1.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         jTable1.setModel(modelTablaSalidas);
-        jTable1.getColumnModel().getColumn(1).setPreferredWidth(30);
-        jTable1.getColumnModel().getColumn(2).setPreferredWidth(30);
-        jTable1.getColumnModel().getColumn(3).setPreferredWidth(150);
-        jTable1.getColumnModel().getColumn(4).setPreferredWidth(150);
+        //jTable1.getColumnModel().getColumn(1).setPreferredWidth(30);
+        //jTable1.getColumnModel().getColumn(2).setPreferredWidth(30);
+        //jTable1.getColumnModel().getColumn(3).setPreferredWidth(150);
+        //jTable1.getColumnModel().getColumn(4).setPreferredWidth(150);
         
         //Ocultar columna de idContacto
         TableColumn tc = jTable1.getColumn("cod_salida");
         jTable1.removeColumn(tc);
         
-        
-        
-        
-        
-        /*
-        pruebagrupo= gestionSalidas.getSalidas();
-        
-        for(int i=0; i<pruebagrupo.size(); i++) {
-            System.out.println(pruebagrupo.get(i).cod_salida+","+pruebagrupo.get(i).cod_Coordinador+","
-            +pruebagrupo.get(i).cod_voluntario+","+formatoFecha.format(pruebagrupo.get(i).fecha)+","+pruebagrupo.get(i).hora+","+pruebagrupo.get(i).observaciones);
-
-        }
-        */
-        
-        
-        
-        
-        
-        
+       
         
     }
 
@@ -96,10 +77,29 @@ public class Caritas_principal extends javax.swing.JFrame {
 
         jScrollPane1 = new javax.swing.JScrollPane();
         jTable1 = new javax.swing.JTable();
+        jPanel1 = new javax.swing.JPanel();
+        jLabel2 = new javax.swing.JLabel();
+        jLabel3 = new javax.swing.JLabel();
+        jLabel4 = new javax.swing.JLabel();
+        jLabel5 = new javax.swing.JLabel();
+        jLabelFecha = new javax.swing.JLabel();
+        jLabelHora = new javax.swing.JLabel();
+        jLabelNombreVol = new javax.swing.JLabel();
+        jLabelNombreCor = new javax.swing.JLabel();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        observaciones = new javax.swing.JTextArea();
+        jLabel6 = new javax.swing.JLabel();
+        jLabel7 = new javax.swing.JLabel();
+        jPanel2 = new javax.swing.JPanel();
+        imagen = new javax.swing.JLabel();
+        jButton1 = new javax.swing.JButton();
+        jSeparator1 = new javax.swing.JSeparator();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setTitle("Listado De Todas las Salidas");
         setResizable(false);
 
+        jTable1.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(0, 0, 0), 1, true));
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null},
@@ -111,7 +111,135 @@ public class Caritas_principal extends javax.swing.JFrame {
                 "Title 1", "Title 2", "Title 3", "Title 4"
             }
         ));
+        jTable1.setGridColor(new java.awt.Color(0, 0, 0));
+        jTable1.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jTable1MouseClicked(evt);
+            }
+        });
         jScrollPane1.setViewportView(jTable1);
+
+        jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder("Datos de Salida"));
+
+        jLabel2.setText("Fecha:");
+
+        jLabel3.setText("Hora:");
+
+        jLabel4.setText("Nombre Vol.:");
+
+        jLabel5.setText("Nombre Cor.:");
+
+        observaciones.setEditable(false);
+        observaciones.setColumns(10);
+        observaciones.setLineWrap(true);
+        observaciones.setRows(3);
+        observaciones.setWrapStyleWord(true);
+        observaciones.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        jScrollPane2.setViewportView(observaciones);
+
+        jLabel6.setText("Observaciones:");
+
+        jLabel7.setText("Imagen de Observaciones:");
+
+        jPanel2.setBackground(new java.awt.Color(255, 255, 255));
+        jPanel2.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+
+        imagen.setBackground(new java.awt.Color(255, 255, 255));
+
+        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
+        jPanel2.setLayout(jPanel2Layout);
+        jPanel2Layout.setHorizontalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+                .addGap(0, 71, Short.MAX_VALUE)
+                .addComponent(imagen, javax.swing.GroupLayout.PREFERRED_SIZE, 82, javax.swing.GroupLayout.PREFERRED_SIZE))
+        );
+        jPanel2Layout.setVerticalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addComponent(imagen, javax.swing.GroupLayout.PREFERRED_SIZE, 78, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 32, Short.MAX_VALUE))
+        );
+
+        jButton1.setFont(new java.awt.Font("Tahoma", 0, 8)); // NOI18N
+        jButton1.setText("Aumentar");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(jSeparator1, javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(jPanel1Layout.createSequentialGroup()
+                                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 122, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .addComponent(jButton1))
+                                    .addGroup(jPanel1Layout.createSequentialGroup()
+                                        .addComponent(jLabel6)
+                                        .addGap(0, 0, Short.MAX_VALUE)))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jLabel7, javax.swing.GroupLayout.PREFERRED_SIZE, 155, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                        .addGap(30, 30, 30))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel4)
+                            .addComponent(jLabel5)
+                            .addComponent(jLabel2)
+                            .addComponent(jLabel3))
+                        .addGap(18, 18, 18)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(jLabelFecha, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jLabelHora, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jLabelNombreVol, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jLabelNombreCor, javax.swing.GroupLayout.DEFAULT_SIZE, 82, Short.MAX_VALUE))
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+        );
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGap(1, 1, 1)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel2)
+                    .addComponent(jLabelFecha))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel3)
+                    .addComponent(jLabelHora))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel4)
+                    .addComponent(jLabelNombreVol))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel5)
+                    .addComponent(jLabelNombreCor))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 5, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(1, 1, 1)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel7)
+                    .addComponent(jLabel6))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                        .addComponent(jScrollPane2)
+                        .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jButton1))
+                .addContainerGap())
+        );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -119,18 +247,46 @@ public class Caritas_principal extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 568, Short.MAX_VALUE)
-                .addContainerGap())
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 300, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(3, 3, 3)
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 384, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 183, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 117, Short.MAX_VALUE))
+                .addGap(43, 43, 43)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 262, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void jTable1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTable1MouseClicked
+        // TODO add your handling code here:
+        
+        voluntario = gestionVoluntario.getVoluntario(arrayListSalidas.get(jTable1.getSelectedRow()).cod_voluntario);
+        coordinador = gestionCoordinador.getCoordinador(arrayListSalidas.get(jTable1.getSelectedRow()).cod_Coordinador);
+        
+        
+        observaciones.setText("");
+        salidaSeleccionada = arrayListSalidas.get(jTable1.getSelectedRow());
+        observaciones.append(salidaSeleccionada.getObservaciones());
+        jLabelFecha.setText(salidaSeleccionada.getFecha()+"");
+        jLabelHora.setText(salidaSeleccionada.getHora()+"");
+        jLabelNombreVol.setText(voluntario.nombre + ", "+voluntario.apellidos);
+        jLabelNombreCor.setText(coordinador.nombre+", "+coordinador.apellidos);
+        
+        
+        
+    }//GEN-LAST:event_jTable1MouseClicked
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jButton1ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -167,7 +323,24 @@ public class Caritas_principal extends javax.swing.JFrame {
         });
     }
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JLabel imagen;
+    private javax.swing.JButton jButton1;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel jLabel6;
+    private javax.swing.JLabel jLabel7;
+    private javax.swing.JLabel jLabelFecha;
+    private javax.swing.JLabel jLabelHora;
+    private javax.swing.JLabel jLabelNombreCor;
+    private javax.swing.JLabel jLabelNombreVol;
+    private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JSeparator jSeparator1;
     private javax.swing.JTable jTable1;
+    private javax.swing.JTextArea observaciones;
     // End of variables declaration//GEN-END:variables
 }
