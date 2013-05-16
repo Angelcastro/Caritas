@@ -26,6 +26,7 @@ public class Voluntario {
     Time horario;
     String observaciones;
     Blob cod_qr;
+    String cadena;
 
     public Voluntario(int cod_voluntario, String nombre, String apellidos, String dni, String direccion, String telefono1, String telefono2, Date fecha_empadronamiento, String zona, Time horario, String observaciones, Blob cod_qr) {
         this.cod_voluntario = cod_voluntario;
@@ -60,7 +61,11 @@ public class Voluntario {
   public Voluntario() {
         
     }
-
+    public String toString() {
+        cadena = apellidos+", "+nombre;
+        
+        return cadena;
+    }
     public int getCod_voluntario() {
         return cod_voluntario;
     }

@@ -22,6 +22,10 @@ public class GestionSalidas {
     ResultSet resultadoLista = null;
     ArrayList<Salidas> resultadoSalidas = new ArrayList();
     int autoincrementoID = -1;
+    Salidas salida;
+
+    public GestionSalidas() {
+    }
     
     
     
@@ -85,8 +89,8 @@ public class GestionSalidas {
         String Observaciones = salida.observaciones;
         
         
-        String sql = "INSERT INTO salidas (Fecha,Hora,Cod_Coordinador,Cod_voluntario,Observaciones) VALUES "
-                + "('"+hora+"',"+Cod_Coordinador+","+Cod_voluntario+"'"+Observaciones+"')";
+        String sql = "INSERT INTO salidas (Fecha,Hora,Cod_Coordinador,Cod_voluntario,Observaciones,Foto_observaciones) VALUES "
+                + "('"+fecha+"','"+hora+"',"+Cod_Coordinador+","+Cod_voluntario+",'"+Observaciones+"',"+Cod_voluntario+")";
         
         try {
                  stmt.executeUpdate(sql);
@@ -151,7 +155,12 @@ public class GestionSalidas {
         return true;
     }
     
+   public void setMandarParaEditar(Salidas salida) {
+        this.salida = salida;
+    }
     
-    
+    public Salidas getMandarParaEditar() {
+        return salida;
+    }
     
 }

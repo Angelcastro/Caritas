@@ -4,6 +4,7 @@
  */
 package caritas;
 
+import java.awt.Frame;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import javax.swing.ListSelectionModel;
@@ -19,6 +20,7 @@ public class Caritas_principal extends javax.swing.JFrame {
     /**
      * Creates new form Caritas_principal
      */
+        
         GestionSalidas gestionSalidas = new GestionSalidas();
         GestionVoluntario gestionVoluntario = new GestionVoluntario();
         GestionCoordinador gestionCoordinador = new GestionCoordinador();
@@ -31,8 +33,8 @@ public class Caritas_principal extends javax.swing.JFrame {
         
     public Caritas_principal() {
         initComponents();
-        
         Conexion.conectar ("127.0.0.1","root","");
+        
         arrayListSalidas= gestionSalidas.getSalidas();
         
         modelTablaSalidas = new DefaultTableModel() {
@@ -43,9 +45,6 @@ public class Caritas_principal extends javax.swing.JFrame {
         String[] cabecera = {"cod_salida","Fecha", " Hora", "Coordinador", "Voluntario"};
         modelTablaSalidas.setColumnIdentifiers(cabecera);
         for(int i=0; i<arrayListSalidas.size(); i++) {
-            //voluntario = gestionVoluntario.getVoluntario(arrayListSalidas.get(i).cod_voluntario);
-            //coordinador = gestionCoordinador.getCoordinador(arrayListSalidas.get(i).cod_Coordinador);
-            //pruebaDetalleSalidaParentesco= gestionAutorizado1.get(pruebaDetalleSalida.get(i).getIdAutorizado());
             String[] arraySalida = {""+arrayListSalidas.get(i).getCod_salida(),""+arrayListSalidas.get(i).getFecha(), ""+arrayListSalidas.get(i).getHora(), ""+arrayListSalidas.get(i).getCod_Coordinador(),
                                        " "+arrayListSalidas.get(i).getCod_voluntario() };
             modelTablaSalidas.addRow(arraySalida);
@@ -53,10 +52,6 @@ public class Caritas_principal extends javax.swing.JFrame {
 
         jTable1.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         jTable1.setModel(modelTablaSalidas);
-        //jTable1.getColumnModel().getColumn(1).setPreferredWidth(30);
-        //jTable1.getColumnModel().getColumn(2).setPreferredWidth(30);
-        //jTable1.getColumnModel().getColumn(3).setPreferredWidth(150);
-        //jTable1.getColumnModel().getColumn(4).setPreferredWidth(150);
         
         //Ocultar columna de idContacto
         TableColumn tc = jTable1.getColumn("cod_salida");
@@ -65,6 +60,16 @@ public class Caritas_principal extends javax.swing.JFrame {
        
         
     }
+    
+    void nuevo() {
+        Insertar dialogoContacto = new Insertar(Frame.getFrames()[0], true);
+        
+        dialogoContacto.setVisible(true);
+        //Liberar la memoria de pantalla ocupada por la ventana de detalle
+        dialogoContacto.dispose();
+        
+    } 
+    
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -94,6 +99,9 @@ public class Caritas_principal extends javax.swing.JFrame {
         imagen = new javax.swing.JLabel();
         jButton1 = new javax.swing.JButton();
         jSeparator1 = new javax.swing.JSeparator();
+        jButton2 = new javax.swing.JButton();
+        jButton3 = new javax.swing.JButton();
+        jButton4 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Listado De Todas las Salidas");
@@ -241,13 +249,36 @@ public class Caritas_principal extends javax.swing.JFrame {
                 .addContainerGap())
         );
 
+        jButton2.setText("Añadir");
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
+
+        jButton3.setText("Editar");
+        jButton3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton3ActionPerformed(evt);
+            }
+        });
+
+        jButton4.setText("Eliminar");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 300, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jButton2)
+                        .addGap(49, 49, 49)
+                        .addComponent(jButton3)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jButton4))
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 300, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(3, 3, 3)
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 384, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
@@ -255,11 +286,20 @@ public class Caritas_principal extends javax.swing.JFrame {
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(43, 43, 43)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(9, 9, 9)
+                        .addComponent(jButton2))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jButton4, javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(jButton3, javax.swing.GroupLayout.Alignment.TRAILING))))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 262, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(32, Short.MAX_VALUE))
         );
 
         pack();
@@ -282,11 +322,30 @@ public class Caritas_principal extends javax.swing.JFrame {
         
         
         
+        
+        
+        
+        
     }//GEN-LAST:event_jTable1MouseClicked
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        // TODO add your handling code here:
+        this.nuevo();
+    }//GEN-LAST:event_jButton2ActionPerformed
+
+    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+       Salidas salidaEditar = new Salidas(arrayListSalidas.get(jTable1.getSelectedRow()).cod_voluntario,
+                arrayListSalidas.get(jTable1.getSelectedRow()).cod_Coordinador,salidaSeleccionada.getObservaciones()); 
+       
+      gestionSalidas.setMandarParaEditar(salidaEditar);
+        
+        
+        
+    }//GEN-LAST:event_jButton3ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -325,6 +384,9 @@ public class Caritas_principal extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel imagen;
     private javax.swing.JButton jButton1;
+    private javax.swing.JButton jButton2;
+    private javax.swing.JButton jButton3;
+    private javax.swing.JButton jButton4;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;

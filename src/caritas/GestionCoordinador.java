@@ -18,11 +18,15 @@ import java.util.ArrayList;
  */
 
 public class GestionCoordinador {
-    Statement stmt;
-    ResultSet resultadoLista = null;
+    Statement stmt=null;
     Coordinador coordinadorLeido =null;
     
+
+    public GestionCoordinador() {
+    }
+    
     public Coordinador getCoordinador(int cod_Coordinador){
+        
      try {
             stmt = Conexion.conexion.createStatement();
         } catch (SQLException ex) {
@@ -40,7 +44,7 @@ public class GestionCoordinador {
            
             
             
-                resultadoLista = stmt.executeQuery(sql);
+                ResultSet resultadoLista  = stmt.executeQuery(sql);
                 resultadoLista.next() ;
                    
                 int cod_Coordinador1 = resultadoLista.getInt("Cod_Coordinador");
@@ -65,6 +69,45 @@ public class GestionCoordinador {
        return coordinadorLeido;
    }
     
+    
+   public ArrayList<Coordinador> getCodigosDeCoordinadores(){
+        ArrayList<Coordinador> resultadoCoordinador = new ArrayList();
+        ResultSet resultadoLista=null;
+        
+        try {
+            stmt = Conexion.conexion.createStatement();
+        } catch (SQLException ex) {
+            System.out.print("Error en el statement");
+            
+        }
+       String sql = "SELECT * "
+                        + "FROM Coordinador order by Apellidos";
+        
+        try {
+                
+                  resultadoLista  = stmt.executeQuery(sql);
+                  while (resultadoLista.next()) 
+                   {
+                        int cod_Coordinador1 = resultadoLista.getInt("Cod_Coordinador");
+                        String nombre = resultadoLista.getString("Nombre");
+                        String apellidos = resultadoLista.getString("Apellidos");
+                        String telefono1 = resultadoLista.getString("Telefono1");
+                        String telefono2= resultadoLista.getString("Telefono2");
+                        Time horario= resultadoLista.getTime("Horario");
+                        String observaciones = resultadoLista.getString("Observaciones");
+                        Coordinador coordiandor = new Coordinador (cod_Coordinador1,nombre,apellidos,
+                        telefono1,telefono2,horario,observaciones);
+                        resultadoCoordinador.add(coordiandor);
+                    }
+   
+
+        }catch  (Exception e) {
+            System.out.print("Error");
+            System.out.print(sql);
+            e.printStackTrace();
+        }
+       return resultadoCoordinador;
+   }
     
     
 }

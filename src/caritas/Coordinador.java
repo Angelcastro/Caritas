@@ -21,6 +21,7 @@ public class Coordinador {
     String telefono2;
     Time horario;
     String observaciones;
+    String cadena;
     
     public Coordinador(int cod_Coordinador, String nombre, String apellidos, String telefono1, String telefono2, Time horario, String observaciones) {
         this.cod_Coordinador = cod_Coordinador;
@@ -45,9 +46,19 @@ public class Coordinador {
     public Coordinador() {
        
     }
+    
+    public Coordinador(int cod_Coordinador) {
+       this.cod_Coordinador = cod_Coordinador;
+    }
 
     public int getCod_Coordinador() {
         return cod_Coordinador;
+    }
+    
+    public String toString() {
+        cadena = apellidos+", "+nombre;
+        
+        return cadena;
     }
 
     public void setCod_Coordinador(int cod_Coordinador) {

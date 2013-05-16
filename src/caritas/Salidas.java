@@ -45,6 +45,9 @@ public class Salidas {
     public Salidas() {
        
     }
+    public Salidas(int cod_Coordinador, int cod_voluntario, String observaciones) {
+       
+    }
 
     public int getCod_salida() {
         return cod_salida;
