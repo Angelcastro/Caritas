@@ -23,6 +23,7 @@ public class GestionSalidas {
     ArrayList<Salidas> resultadoSalidas = new ArrayList();
     int autoincrementoID = -1;
     Salidas salida;
+    Salidas salidaEditar;
 
     public GestionSalidas() {
     }
@@ -123,12 +124,12 @@ public class GestionSalidas {
  
     }
     
-   public boolean delete(Salidas salida) {
+   public boolean delete(int codSalida) {
 
         try {
 
             stmt = Conexion.conexion.createStatement();
-            String sql = "Delete from salidas where Cod_salida =" + salida.cod_salida;
+            String sql = "Delete from salidas where Cod_salida =" + codSalida;
             stmt.executeUpdate(sql);
 
         } catch (SQLException ex) {
@@ -141,10 +142,11 @@ public class GestionSalidas {
    
    public boolean update(Salidas salida) {
         try {
-
+            System.out.println(salida.getFecha()+", "+salida.getHora()+", "+salida.getCod_Coordinador()+", "+ salida.getCod_voluntario()+", "+salida.getObservaciones()+", "+salida.getCod_salida());
+            
             stmt = Conexion.conexion.createStatement();
-            String sql = "Update alumno set Fecha =" + salida.getFecha() + ", Hora =" + salida.getHora()+ ", Cod_Coordinador =" + salida.getCod_Coordinador()
-                    + ", Cod_voluntario =" + salida.getCod_voluntario()+ ", Observaciones =" + salida.getObservaciones()+ "where Cod_salida =" + salida.getCod_salida();
+            String sql = "Update salidas set Fecha ='" + salida.getFecha() + "', Hora ='" + salida.getHora()+ "', Cod_Coordinador =" + salida.getCod_Coordinador()
+                    + ", Cod_voluntario =" + salida.getCod_voluntario()+ ", Observaciones ='" + salida.getObservaciones()+ "' where Cod_salida =" + salida.getCod_salida();
             stmt.executeUpdate(sql);
 
         } catch (SQLException ex) {
@@ -155,12 +157,6 @@ public class GestionSalidas {
         return true;
     }
     
-   public void setMandarParaEditar(Salidas salida) {
-        this.salida = salida;
-    }
-    
-    public Salidas getMandarParaEditar() {
-        return salida;
-    }
+ 
     
 }

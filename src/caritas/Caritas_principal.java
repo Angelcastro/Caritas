@@ -7,6 +7,7 @@ package caritas;
 import java.awt.Frame;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import javax.swing.JOptionPane;
 import javax.swing.ListSelectionModel;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
@@ -17,59 +18,66 @@ import javax.swing.table.TableColumn;
  */
 public class Caritas_principal extends javax.swing.JFrame {
 
-    /**
-     * Creates new form Caritas_principal
-     */
-        
         GestionSalidas gestionSalidas = new GestionSalidas();
         GestionVoluntario gestionVoluntario = new GestionVoluntario();
         GestionCoordinador gestionCoordinador = new GestionCoordinador();
         SimpleDateFormat formatoFecha = new SimpleDateFormat("dd/MM/YYYY");
         ArrayList<Salidas> arrayListSalidas = new ArrayList();
-        DefaultTableModel modelTablaSalidas = new DefaultTableModel();
         Voluntario voluntario =null;
         Coordinador coordinador =null;
         Salidas salidaSeleccionada;
+        public Salidas salida =null;
+        boolean editar = false;
+        DefaultTableModel modelTablaSalidas = null;
         
     public Caritas_principal() {
         initComponents();
         Conexion.conectar ("127.0.0.1","root","");
-        
+        this.mostrarTabla();
+    }
+    
+     void mostrarTabla() {
+        modelTablaSalidas=null;
+        arrayListSalidas=null;
         arrayListSalidas= gestionSalidas.getSalidas();
-        
+        System.out.println(arrayListSalidas);
         modelTablaSalidas = new DefaultTableModel() {
-            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                public boolean isCellEditable(int rowIndex, int columnIndex) {
                 return false;
-            }                
-        };       
+                }                
+        };      
         String[] cabecera = {"cod_salida","Fecha", " Hora", "Coordinador", "Voluntario"};
         modelTablaSalidas.setColumnIdentifiers(cabecera);
+       
         for(int i=0; i<arrayListSalidas.size(); i++) {
             String[] arraySalida = {""+arrayListSalidas.get(i).getCod_salida(),""+arrayListSalidas.get(i).getFecha(), ""+arrayListSalidas.get(i).getHora(), ""+arrayListSalidas.get(i).getCod_Coordinador(),
                                        " "+arrayListSalidas.get(i).getCod_voluntario() };
             modelTablaSalidas.addRow(arraySalida);
         }    
-
         jTable1.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         jTable1.setModel(modelTablaSalidas);
-        
         //Ocultar columna de idContacto
         TableColumn tc = jTable1.getColumn("cod_salida");
         jTable1.removeColumn(tc);
         
-       
-        
-    }
+     }
     
     void nuevo() {
         Insertar dialogoContacto = new Insertar(Frame.getFrames()[0], true);
+        //Asignar el contacto obtenido a la ventana de diálogo
+        dialogoContacto.nuevo();
+        if(editar == true)
+        {
+            salidaSeleccionada = arrayListSalidas.get(jTable1.getSelectedRow());
+            Salidas salidaEditar = new Salidas(salidaSeleccionada.getCod_salida(),coordinador.getCod_Coordinador(),voluntario.getCod_voluntario(),salidaSeleccionada.getObservaciones()); 
         
+            dialogoContacto.setSalida(salidaEditar);
+        } 
         dialogoContacto.setVisible(true);
         //Liberar la memoria de pantalla ocupada por la ventana de detalle
         dialogoContacto.dispose();
         
     } 
-    
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -264,6 +272,11 @@ public class Caritas_principal extends javax.swing.JFrame {
         });
 
         jButton4.setText("Eliminar");
+        jButton4.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton4ActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -310,8 +323,6 @@ public class Caritas_principal extends javax.swing.JFrame {
         
         voluntario = gestionVoluntario.getVoluntario(arrayListSalidas.get(jTable1.getSelectedRow()).cod_voluntario);
         coordinador = gestionCoordinador.getCoordinador(arrayListSalidas.get(jTable1.getSelectedRow()).cod_Coordinador);
-        
-        
         observaciones.setText("");
         salidaSeleccionada = arrayListSalidas.get(jTable1.getSelectedRow());
         observaciones.append(salidaSeleccionada.getObservaciones());
@@ -319,13 +330,7 @@ public class Caritas_principal extends javax.swing.JFrame {
         jLabelHora.setText(salidaSeleccionada.getHora()+"");
         jLabelNombreVol.setText(voluntario.nombre + ", "+voluntario.apellidos);
         jLabelNombreCor.setText(coordinador.nombre+", "+coordinador.apellidos);
-        
-        
-        
-        
-        
-        
-        
+ 
     }//GEN-LAST:event_jTable1MouseClicked
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
@@ -334,18 +339,41 @@ public class Caritas_principal extends javax.swing.JFrame {
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         // TODO add your handling code here:
+        editar = false; 
         this.nuevo();
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
-       Salidas salidaEditar = new Salidas(arrayListSalidas.get(jTable1.getSelectedRow()).cod_voluntario,
-                arrayListSalidas.get(jTable1.getSelectedRow()).cod_Coordinador,salidaSeleccionada.getObservaciones()); 
-       
-      gestionSalidas.setMandarParaEditar(salidaEditar);
-        
-        
-        
+       editar = true; 
+      this.nuevo(); 
     }//GEN-LAST:event_jButton3ActionPerformed
+
+    private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
+        
+        int respuesta = JOptionPane.showConfirmDialog(this, 
+                    "¿Desea suprimir el contacto?\n"
+                    + salidaSeleccionada.getCod_salida(),
+                    "Confirmación",
+                    JOptionPane.YES_NO_OPTION, 
+                    JOptionPane.WARNING_MESSAGE);
+            //Comprobar si se ha pulsado Aceptar o Cancelar 
+            if(respuesta==JOptionPane.YES_OPTION) {
+                salidaSeleccionada.getCod_salida();
+                gestionSalidas.delete(salidaSeleccionada.getCod_salida());
+                modelTablaSalidas.removeRow(jTable1.getSelectedRow());
+            } 
+        else {
+            //Si no se ha seleccionado un contacto de la lista hay que notificarlo
+            JOptionPane.showMessageDialog(this, 
+                    "Debe seleccionar un contacto previamente", 
+                    "Atención", JOptionPane.WARNING_MESSAGE);
+        }
+        observaciones.setText("");
+        jLabelFecha.setText("");
+        jLabelHora.setText("");
+        jLabelNombreVol.setText("");
+        jLabelNombreCor.setText(""); 
+    }//GEN-LAST:event_jButton4ActionPerformed
 
     /**
      * @param args the command line arguments

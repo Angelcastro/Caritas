@@ -13,6 +13,7 @@ import java.util.Calendar;
 import javax.swing.ComboBoxModel;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultListModel;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -38,16 +39,27 @@ public class Insertar extends javax.swing.JDialog {
     String observaciones;
     Coordinador[] arrayParaJComboBox=null;
     Voluntario[] arrayParaJComboBox2=null;
-    
+    Salidas salidasEditar = null;
+    boolean editar=false;
+    int cod_salidas;
     
     
     public Insertar(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+         
+    }public void volverAMostar() {
+        Caritas_principal mostrarTabla = new Caritas_principal();
+        mostrarTabla.mostrarTabla();
+        //mostrarTabla.setVisible(true);
         
-       if (gestionSalidas.getMandarParaEditar()== null)
-       {
-        
+    }
+    
+    public void nuevo() {
+        editar=false;
+        //System.out.println(salidasEditar.getObservaciones());
+       //if (salidasEditar== null)
+       //{
         //Estos Dos codigos hacen que el desplegable coja todos los datos.
         int numElementos = gestionCoordinador.getCodigosDeCoordinadores().size();
         arrayParaJComboBox = new Coordinador[numElementos];
@@ -69,19 +81,38 @@ public class Insertar extends javax.swing.JDialog {
         SimpleDateFormat formatoFechaPersonalHora = new SimpleDateFormat(patron2);
         fecha= Date.valueOf(formatoFechaPersonalFecha.format(calendar.getTime())); 
         hora= Time.valueOf(formatoFechaPersonalHora.format(calendar.getTime()));
-       }else{
-           jTextArea1.setText(gestionSalidas.getMandarParaEditar().getObservaciones());
-           
-           
-           
-           
-        } 
+        
+    }
+    
+    public void setSalida(Salidas salida) {
+        editar=true;
+        int numElementos = gestionCoordinador.getCodigosDeCoordinadores().size();
+        int numElementos2 = gestionVoluntario.getTodosVoluntarios().size();
+        this.salidasEditar = salida;
+        if(salidasEditar.getCod_salida()!= -1) {
+            jLabel6.setText(salidasEditar.getCod_salida()+"");
+        } else {
+            jLabel6.setText("Nuevo");
+        }        
+        jTextArea1.setText(salidasEditar.getObservaciones());
         
         
-        
-        
-        
-        
+        for(int i=0; i<numElementos; i++) 
+        {
+            if(arrayParaJComboBox[i].getCod_Coordinador()== salidasEditar.getCod_Coordinador() )
+            {
+                jComboBox1.setSelectedIndex(i);
+                i=numElementos;
+            }
+        }
+        for(int i=0; i<numElementos2; i++) 
+        {
+            if(arrayParaJComboBox2[i].getCod_voluntario()== salidasEditar.getCod_voluntario() )
+            {
+                jComboBox2.setSelectedIndex(i);
+                i=numElementos2;
+            }
+        }  
     }
 
     /**
@@ -105,12 +136,13 @@ public class Insertar extends javax.swing.JDialog {
         jLabel5 = new javax.swing.JLabel();
         jButton2 = new javax.swing.JButton();
         jButton3 = new javax.swing.JButton();
+        jLabel6 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Insertar una Salida");
 
         jLabel1.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
-        jLabel1.setText("Identificador: NUEVO");
+        jLabel1.setText("ID Salida: ");
 
         jLabel2.setText("Codigo Cordinador:");
 
@@ -151,6 +183,8 @@ public class Insertar extends javax.swing.JDialog {
             }
         });
 
+        jLabel6.setText("jLabel6");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -177,6 +211,8 @@ public class Insertar extends javax.swing.JDialog {
                     .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
                         .addGap(10, 10, 10)
                         .addComponent(jLabel1)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jLabel6)
                         .addGap(0, 0, Short.MAX_VALUE))
                     .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
                         .addContainerGap()
@@ -189,7 +225,9 @@ public class Insertar extends javax.swing.JDialog {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addGap(22, 22, 22)
-                .addComponent(jLabel1)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel1)
+                    .addComponent(jLabel6))
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel2)
@@ -224,20 +262,48 @@ public class Insertar extends javax.swing.JDialog {
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-        //se rellenan las demas variables.
-        cod_Coordinador=arrayParaJComboBox[jComboBox1.getSelectedIndex()].getCod_Coordinador();
-        cod_voluntario =arrayParaJComboBox2[jComboBox2.getSelectedIndex()].getCod_voluntario();
-        observaciones = jTextArea1.getText();
-        salidas = new Salidas(fecha,hora,cod_Coordinador,cod_voluntario,observaciones,null);
-        ultimaIDSalidasIntroducida=gestionSalidas.insert(salidas);
-        jTextArea1.setText("");
-        jComboBox2.setSelectedIndex(0);
-        
+        boolean anadido=false;
+        if(editar==true)
+        {
+            cod_salidas = salidasEditar.getCod_salida();
+            cod_Coordinador=arrayParaJComboBox[jComboBox1.getSelectedIndex()].getCod_Coordinador();
+            cod_voluntario =arrayParaJComboBox2[jComboBox2.getSelectedIndex()].getCod_voluntario();
+            observaciones = jTextArea1.getText();
+            salidas = new Salidas(cod_salidas,fecha,hora,cod_Coordinador,cod_voluntario,observaciones);
+           anadido= gestionSalidas.update(salidas);
+           if (anadido == true)
+           {
+               JOptionPane.showMessageDialog(this, "Se ha Modificado con Exito!", "Informacion",JOptionPane.WARNING_MESSAGE );
+           
+           }
+           this.setVisible(false);
+
+        }else
+        {
+            //se rellenan las demas variables.
+            cod_Coordinador=arrayParaJComboBox[jComboBox1.getSelectedIndex()].getCod_Coordinador();
+            cod_voluntario =arrayParaJComboBox2[jComboBox2.getSelectedIndex()].getCod_voluntario();
+            observaciones = jTextArea1.getText();
+            salidas = new Salidas(fecha,hora,cod_Coordinador,cod_voluntario,observaciones,null);
+            ultimaIDSalidasIntroducida=gestionSalidas.insert(salidas);
+            jTextArea1.setText("");
+            jComboBox2.setSelectedIndex(0);
+            JOptionPane.showMessageDialog(this, 
+                    "Se ha Introducido Correctamente", 
+                    "Información", JOptionPane.INFORMATION_MESSAGE);
+            
+            this.volverAMostar();
+        }
+        this.volverAMostar();
+        this.setVisible(false);
+        this.volverAMostar();
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
         // TODO add your handling code here:
+        this.volverAMostar();
         this.setVisible(false);
+        
     }//GEN-LAST:event_jButton3ActionPerformed
 
     /**
@@ -292,6 +358,7 @@ public class Insertar extends javax.swing.JDialog {
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel jLabel6;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTextArea jTextArea1;
     // End of variables declaration//GEN-END:variables

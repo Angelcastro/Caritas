@@ -32,6 +32,16 @@ public class Salidas {
         this.foto_observaciones = foto_observaciones;
     }
     
+    public Salidas(int cod_salida, Date fecha, Time hora, int cod_Coordinador, int cod_voluntario, String observaciones) {
+        this.cod_salida = cod_salida;
+        this.fecha = fecha;
+        this.hora = hora;
+        this.cod_Coordinador = cod_Coordinador;
+        this.cod_voluntario = cod_voluntario;
+        this.observaciones = observaciones;
+        
+    }
+    
     public Salidas( Date fecha, Time hora, int cod_Coordinador, int cod_voluntario, String observaciones, Blob foto_observaciones) {
         
         this.fecha = fecha;
@@ -45,7 +55,11 @@ public class Salidas {
     public Salidas() {
        
     }
-    public Salidas(int cod_Coordinador, int cod_voluntario, String observaciones) {
+    public Salidas(int cod_salida,int cod_Coordinador, int cod_voluntario, String observaciones) {
+         this.cod_salida = cod_salida;
+        this.cod_Coordinador = cod_Coordinador;
+        this.cod_voluntario = cod_voluntario;
+        this.observaciones = observaciones;
        
     }
 
